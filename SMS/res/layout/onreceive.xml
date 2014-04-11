@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#324AB2"
     android:orientation="vertical" >
 
     <TextView
@@ -26,23 +26,6 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="16-Character Secret Key:"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <EditText
-        android:id="@+id/secretKey"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword" >
-
-        <requestFocus />
-
-    </EditText>
-
 
     <TextView
         android:id="@+id/textView3"
@@ -54,7 +37,8 @@
     <TextView
         android:id="@+id/encryptedMsg"
         android:layout_width="match_parent"
-        android:layout_height="130dp" />
+        android:layout_height="130dp"
+        android:background="@drawable/rounded_corner" />
 
     <TextView
         android:id="@+id/textView4"
@@ -67,7 +51,8 @@
         android:id="@+id/decryptedMsg"
         android:layout_width="match_parent"
         android:layout_height="98dp"
-        android:layout_weight="0.05" />
+        android:layout_weight="0.05"
+        android:background="@drawable/rounded_corner"/>
 
     <LinearLayout
         

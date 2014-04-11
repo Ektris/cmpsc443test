@@ -27,7 +27,7 @@ public class SMSactivity extends Activity {
 		setContentView(R.layout.main);
 				
 		recNum = (EditText) findViewById(R.id.recNum);		
-		secretKey = (EditText) findViewById(R.id.secretKey);		
+		//secretKey = (EditText) findViewById(R.id.secretKey);		
 		msgContent = (EditText) findViewById(R.id.msgContent);		
 		send = (Button) findViewById(R.id.Send);		
 		cancel = (Button) findViewById(R.id.cancel);
@@ -47,7 +47,7 @@ public class SMSactivity extends Activity {
 			public void onClick(View v) {
 			
 				String recNumString = recNum.getText().toString();				
-				String secretKeyString = secretKey.getText().toString();				
+				String secretKeyString = new String("1111111111111111");//secretKey.getText().toString();				
 				String msgContentString = msgContent.getText().toString();				
 				
 				// check for the validity of the user input				

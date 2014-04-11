@@ -31,7 +31,7 @@ public class DisplaySMSActivity extends Activity
 		senderNum = (TextView) findViewById(R.id.senderNum);		
 		encryptedMsg = (TextView) findViewById(R.id.encryptedMsg);		
 		decryptedMsg = (TextView) findViewById(R.id.decryptedMsg);		
-		secretKey = (EditText) findViewById(R.id.secretKey);		
+		//secretKey = (EditText) findViewById(R.id.secretKey);		
 		submit = (Button) findViewById(R.id.submit);		
 		cancel = (Button) findViewById(R.id.cancel);		
 		
@@ -68,7 +68,7 @@ public class DisplaySMSActivity extends Activity
 			public void onClick(View v) {	
 		
 			// user input the AES secret key		
-			String secretKeyString = secretKey.getText().toString();
+			String secretKeyString = new String("1111111111111111");//secretKey.getText().toString();
 					
 			//key length should be 16 characters as defined by AES-128-bit			
 			if (secretKeyString.length() > 0 && secretKeyString.length() == 16) 
@@ -79,7 +79,7 @@ public class DisplaySMSActivity extends Activity
 					byte[] msg = hex2byte(msgContent.getBytes());					
 					
 					// decrypt the byte array					
-					byte[] result = decryptSMS(secretKey.getText().toString(), msg);					
+					byte[] result = decryptSMS(secretKeyString, msg);//decryptSMS(secretKey.getText().toString(), msg);					
 					
 					// set the text view for the decrypted message					
 					decryptedMsg.setText(new String(result));				
