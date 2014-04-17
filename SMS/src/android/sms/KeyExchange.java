@@ -1,3 +1,5 @@
+package android.sms;
+
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -50,5 +52,4 @@ public class KeyExchange {
   		
   		return BpublicKey;
   	}
-  	
-  }
+}
