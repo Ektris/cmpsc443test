@@ -44,8 +44,8 @@ public class DisplaySMSActivity extends Activity
 		// get the Intent extra		
 		Bundle extras = getIntent().getExtras();
 		
-		if (extras != null) {		
-		
+		if (extras != null)
+		{
 			// get the sender phone number from extra			
 			originNum = extras.getString("originNum");
 			
@@ -56,16 +56,17 @@ public class DisplaySMSActivity extends Activity
 			senderNum.setText(originNum);			
 			encryptedMsg.setText(msgContent);
 		} 
-		else {					
+		else
+		{					
 			// if the Intent is null, there should be something wrong
 			Toast.makeText(getBaseContext(), "Error Occurs!",		
 			Toast.LENGTH_SHORT).show();		
 			finish();		
 		}
 		
-		
 		// when click on the cancel button, return		
-		cancel.setOnClickListener(new View.OnClickListener() {	
+		cancel.setOnClickListener(new View.OnClickListener()
+		{	
 			public void onClick(View v) { finish();	}
 		});
 		
@@ -84,9 +85,9 @@ public class DisplaySMSActivity extends Activity
 						+ (senderNum.toString() + yourNumber).hashCode();	
 					
 			//key length should be 16 characters as defined by AES-128-bit			
-			//if (secretKeyString.length() > 0 && secretKeyString.length() == 16) 
-			//{			
-				try {
+			//if (secretKeyString.length() > 0 && secretKeyString.length() == 16)
+				try
+				{
 					// convert the encrypted String message body to a byte
 					// array
 					byte[] msg = hex2byte(msgContent.getBytes());					
@@ -97,7 +98,9 @@ public class DisplaySMSActivity extends Activity
 					// set the text view for the decrypted message					
 					decryptedMsg.setText(new String(result));				
 				
-				} catch (Exception e) {							
+				}
+				catch (Exception e)
+				{							
 					// in the case of message corrupted or invalid key				
 					// decryption cannot be carried out				 
 					decryptedMsg.setText("Message Cannot Be Decrypted!");				
@@ -110,14 +113,15 @@ public class DisplaySMSActivity extends Activity
 	}	
 	
 	// utility function: convert hex array to byte array	
-	public static byte[] hex2byte(byte[] b) {
-	
+	public static byte[] hex2byte(byte[] b)
+	{
 		if ((b.length % 2) != 0)		
 			throw new IllegalArgumentException("hello");		
 		
 		byte[] b2 = new byte[b.length / 2];		
 		
-		for (int n = 0; n < b.length; n += 2) {		
+		for (int n = 0; n < b.length; n += 2)
+		{		
 			String item = new String(b, n, 2);		
 			b2[n / 2] = (byte) Integer.parseInt(item, 16);		
 		}		
@@ -152,4 +156,3 @@ public class DisplaySMSActivity extends Activity
 		return key;	
 	}
 }
-
