@@ -8,7 +8,19 @@ import java.security.SecureRandom;
 import javax.crypto.KeyAgreement;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.DHParameterSpec;
-
+/* Can you send public key as a message?
+ * Pair up in certain way: assume know person and can compare.
+ * --CAN SHARE PASSWORD to derive symmetric key;
+ * --Assume offline exchange
+ * Test on phones
+ * Look up existing apps and see what they provide
+ * --Serves as channel to help establish security;
+ * Ex. Enable encryption or not
+ * Attachments
+ * Drop down for accessing keys?
+ * Integrate contact fill for recipient
+ * Main view = list
+ * */
 public class KeyExchange {
 
 	  private static BigInteger g = new BigInteger("7961C6D7913FDF8A034593294FA52D6F8354E9EDFE3EDC8EF082D36662D69DFE8CA7DC7480121C98B9774DFF915FB710D79E1BCBA68C0D429CD6B9AD73C0EF20", 16);
@@ -16,7 +28,6 @@ public class KeyExchange {
   	
   	public static byte[] getSecretKey() throws Exception 
   	{
-  		
   		DHParameterSpec dhParams = new DHParameterSpec(p, g);
   		
   		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DH");
@@ -37,7 +48,6 @@ public class KeyExchange {
   		SecretKey secretKey = ka.generateSecret("AES");
 
   		return secretKey.getEncoded();
-  		
   	}
   	
   	private static KeyPair getpeerkey() throws Exception

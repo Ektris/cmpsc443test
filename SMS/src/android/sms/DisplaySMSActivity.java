@@ -1,37 +1,43 @@
 package android.sms;
 
 import java.security.Key;
+import java.security.MessageDigest;
+import java.util.Arrays;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
+import android.content.Context;
 
 public class DisplaySMSActivity extends Activity 
 {	
-	EditText secretKey;	
-	TextView senderNum;	
+	EditText password;	
+	TextView senderNum;
 	TextView encryptedMsg;	
 	TextView decryptedMsg;	
-	Button submit;	
+	Button submit;
 	Button cancel;	
 	String originNum = "";	
 	String msgContent = "";
 		
 	@Override	
-	public void onCreate(Bundle savedInstanceState) {
-	
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.onreceive);		
 		
 		senderNum = (TextView) findViewById(R.id.senderNum);		
 		encryptedMsg = (TextView) findViewById(R.id.encryptedMsg);		
-		decryptedMsg = (TextView) findViewById(R.id.decryptedMsg);		
-		//secretKey = (EditText) findViewById(R.id.secretKey);		
+		decryptedMsg = (TextView) findViewById(R.id.decryptedMsg);
+		password = (EditText) findViewById(R.id.password);
 		submit = (Button) findViewById(R.id.submit);		
 		cancel = (Button) findViewById(R.id.cancel);		
 		
@@ -64,15 +70,22 @@ public class DisplaySMSActivity extends Activity
 		});
 		
 		// when click on the submit button decrypt the message body		
-		submit.setOnClickListener(new View.OnClickListener() {		
-			public void onClick(View v) {	
-		
-			// user input the AES secret key		
-			String secretKeyString = new String("1111111111111111");//secretKey.getText().toString();
+		submit.setOnClickListener(new View.OnClickListener()
+		{		
+			public void onClick(View v)
+			{
+				// Generate key string by combining a hash of the password and the combined phone numbers
+				
+				TelephonyManager mTelephonyMgr;
+				mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+				String yourNumber = mTelephonyMgr.getLine1Number();
+				
+				String secretKeyString = String.valueOf(Math.abs(password.getText().toString().hashCode()))
+						+ (senderNum.toString() + yourNumber).hashCode();	
 					
 			//key length should be 16 characters as defined by AES-128-bit			
-			if (secretKeyString.length() > 0 && secretKeyString.length() == 16) 
-			{			
+			//if (secretKeyString.length() > 0 && secretKeyString.length() == 16) 
+			//{			
 				try {
 					// convert the encrypted String message body to a byte
 					// array
@@ -89,9 +102,9 @@ public class DisplaySMSActivity extends Activity
 					// decryption cannot be carried out				 
 					decryptedMsg.setText("Message Cannot Be Decrypted!");				
 				}			
-			} else			
-				Toast.makeText(getBaseContext(), "You must provide a 16-character secret key!",
-					Toast.LENGTH_SHORT).show();			
+			//} else			
+			//	Toast.makeText(getBaseContext(), "You must provide a 16-character secret key!",
+			//		Toast.LENGTH_SHORT).show();			
 			}			
 		});	
 	}	
@@ -131,8 +144,11 @@ public class DisplaySMSActivity extends Activity
 		
 	private static Key generateKey(String secretKeyString) throws Exception 
 	{	
-		// generate AES secret key from a String		
-		Key key = new SecretKeySpec(secretKeyString.getBytes(), "AES");		
+		byte[] keyBytes = secretKeyString.getBytes("UTF-8");
+		MessageDigest sha = MessageDigest.getInstance("SHA-1");
+		keyBytes = sha.digest(keyBytes);
+		keyBytes = Arrays.copyOf(keyBytes, 16);
+		Key key = new SecretKeySpec(keyBytes, "AES");	
 		return key;	
 	}
 }
