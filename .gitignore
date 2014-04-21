@@ -168,6 +168,4 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 >>>>>>> origin/C
 .DS_Store
-SMS/bin/R.txt
-SMS/bin/jarlist.cache
-SMS/project.properties
+
