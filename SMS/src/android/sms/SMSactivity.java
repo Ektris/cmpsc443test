@@ -46,8 +46,8 @@ public class SMSactivity extends Activity
 			}
 		});
 		
-		// encrypt the message and send when click Send button		
 		send.setOnClickListener(new View.OnClickListener()
+		// Encrypt the message and send it when Send is pressed
 		{
 			public void onClick(View v)
 			{
@@ -61,111 +61,89 @@ public class SMSactivity extends Activity
 				String yourNumber = mTelephonyMgr.getLine1Number();
 				
 				String secretKeyString = String.valueOf(Math.abs(password.getText().toString().hashCode()))
-						+ (yourNumber + recNumString).hashCode();
-				
-				// check for the validity of the user input				
-				// key length should be 16 characters as defined by AES-128-bit
-				
-				if (recNumString.length() > 0 && secretKeyString.length() > 0				
-				  && msgContentString.length() > 0				
-				  /*&& secretKeyString.length() == 16*/)
-				{					
-					// encrypt the message					
+						+ String.valueOf(Math.abs((yourNumber + recNumString).hashCode()));
+
+				if (recNumString.length() > 0 && secretKeyString.length() > 0 && msgContentString.length() > 0)
+				{
+					// Encrypt the message
 					byte[] encryptedMsg = encryptSMS(secretKeyString, msgContentString);
-										
-					// convert the byte array to hex format in order for transmission					
-					String msgString = byte2hex(encryptedMsg);					
-					
-					// send the message through SMS					
+
+					// Send the message				
+					String msgString = byteToHex(encryptedMsg);				
 					sendSMS(recNumString, msgString);
-										
-					// finish					
-					finish();		
+			
+					finish();
 				}
 				else
 				{
-					Toast.makeText(getBaseContext(),				
-						"Please enter phone number, secret key and the message. Secret key must be 16 characters!",				
+					Toast.makeText(getBaseContext(),
+						"Must enter a recipient's phone number, password, and message.",
 						Toast.LENGTH_SHORT).show();
 				}
-			}		
-		});	
-	}
-	
-	public static void sendSMS(String recNumString, String encryptedMsg)
-	{
-		try
-		{		
-			// get a SmsManager
-			SmsManager smsManager = SmsManager.getDefault();			
-			
-			// Message may exceed 160 characters			
-			// need to divide the message into multiples			
-			ArrayList<String> parts = smsManager.divideMessage(encryptedMsg);			
-			smsManager.sendMultipartTextMessage(recNumString, null, parts, null, null);		
-		
-		}
-		catch (Exception e)
-		{	
-			e.printStackTrace();
-		}
+			}
+		});
 	}
 
-	// utility function	
-	public static String byte2hex(byte[] b)
-	{	
-		String hs = "";		
-		String stmp = "";	
+	public static void sendSMS(String recNumString, String encryptedMsg)
+	{
+		SmsManager smsManager = SmsManager.getDefault();			
+		
+		// Need to divide message into parts if it exceeds 160 characters		
+		ArrayList<String> parts = smsManager.divideMessage(encryptedMsg);
+		smsManager.sendMultipartTextMessage(recNumString, null, parts, null, null);
+	}
+
+	public static String byteToHex(byte[] b)
+	// Converts a byte stream to hex format
+	{
+		String hs = "";
+		String stmp = "";
 		
 		for (int n = 0; n < b.length; n++)
 		{
-			stmp = Integer.toHexString(b[n] & 0xFF);			
-		
+			stmp = Integer.toHexString(b[n] & 0xFF);	
+
 			if (stmp.length() == 1)
 				hs += ("0" + stmp);
 			else
-				hs += stmp;		
-		}		
-		return hs.toUpperCase();	
+				hs += stmp;
+		}
+		return hs.toUpperCase();
 	}
-	
-	// encryption function	
-	public static byte[] encryptSMS(String secretKeyString,	String msgContentString) 
+
+	public static byte[] encryptSMS(String keyString, String message)
+	// Encrypt message using keyString
 	{	
 		try
 		{
-			byte[] returnArray;
-						
-			// generate AES secret key from user input			
-			Key key = generateKey(secretKeyString);			
-			
-			// specify the cipher algorithm using AES			
+			byte[] encryptedBytes;
+
+			// Generate key from user input
+			Key key = generateKey(keyString);
+
+			// Encrypt the message using AES
 			Cipher c = Cipher.getInstance("AES");
-						
-			// specify the encryption mode			
 			c.init(Cipher.ENCRYPT_MODE, key);
-						
-			// encrypt			
-			returnArray = c.doFinal(msgContentString.getBytes());
-						
-			return returnArray;		
-		
+			encryptedBytes = c.doFinal(message.getBytes());
+
+			return encryptedBytes;
 		}
-		catch (Exception e)
-		{	
-			e.printStackTrace();			
-			byte[] returnArray = null;			
-			return returnArray;		
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			byte[] returnArray = null;
+			return returnArray;
 		}
-	}	
-	
+	}
+
 	private static Key generateKey(String secretKeyString) throws Exception
+	// Creates a key spec from a given key string
 	{
 		byte[] keyBytes = secretKeyString.getBytes("UTF-8");
 		MessageDigest sha = MessageDigest.getInstance("SHA-1");
 		keyBytes = sha.digest(keyBytes);
 		keyBytes = Arrays.copyOf(keyBytes, 16);
 		Key key = new SecretKeySpec(keyBytes, "AES");	
-		return key;	
+		return key;
 	}
 }

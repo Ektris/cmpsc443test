@@ -82,7 +82,7 @@
             android:id="@+id/submit"
             android:layout_width="159dp"
             android:layout_height="wrap_content"
-            android:text="Submit" />
+            android:text="Decrypt" />
 
         <Button
             android:id="@+id/cancel"

@@ -17,138 +17,120 @@ import android.widget.Toast;
 import android.app.Activity;
 import android.content.Context;
 
-public class DisplaySMSActivity extends Activity 
-{	
-	EditText password;	
+public class DisplaySMSActivity extends Activity
+{
+	EditText password;
 	TextView senderNum;
-	TextView encryptedMsg;	
-	TextView decryptedMsg;	
+	TextView encryptedMessage;
+	TextView decryptedMessage;
 	Button submit;
-	Button cancel;	
-	String originNum = "";	
+	Button cancel;
+	String originNum = "";
 	String msgContent = "";
-		
-	@Override	
+
+	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState);		
-		setContentView(R.layout.onreceive);		
-		
-		senderNum = (TextView) findViewById(R.id.senderNum);		
-		encryptedMsg = (TextView) findViewById(R.id.encryptedMsg);		
-		decryptedMsg = (TextView) findViewById(R.id.decryptedMsg);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.onreceive);
+
+		senderNum = (TextView) findViewById(R.id.senderNum);
+		encryptedMessage = (TextView) findViewById(R.id.encryptedMsg);
+		decryptedMessage = (TextView) findViewById(R.id.decryptedMsg);
 		password = (EditText) findViewById(R.id.password);
-		submit = (Button) findViewById(R.id.submit);		
-		cancel = (Button) findViewById(R.id.cancel);		
-		
-		// get the Intent extra		
+		submit = (Button) findViewById(R.id.submit);
+		cancel = (Button) findViewById(R.id.cancel);
+
 		Bundle extras = getIntent().getExtras();
-		
-		if (extras != null)
-		{
-			// get the sender phone number from extra			
+
+		if(extras != null)
+		{			
 			originNum = extras.getString("originNum");
 			
-			// get the encrypted message body from extra			
 			msgContent = extras.getString("msgContent");
-						
-			// set the text fields in the UI			
-			senderNum.setText(originNum);			
-			encryptedMsg.setText(msgContent);
-		} 
+		
+			senderNum.setText(originNum);
+			encryptedMessage.setText(msgContent);
+		}
 		else
-		{					
-			// if the Intent is null, there should be something wrong
-			Toast.makeText(getBaseContext(), "Error Occurs!",		
-			Toast.LENGTH_SHORT).show();		
-			finish();		
+		{
+			Toast.makeText(getBaseContext(), "Error!",
+			Toast.LENGTH_SHORT).show();
+			finish();
 		}
 		
-		// when click on the cancel button, return		
+		// Return when Cancel is pressed	
 		cancel.setOnClickListener(new View.OnClickListener()
 		{	
 			public void onClick(View v) { finish();	}
 		});
 		
-		// when click on the submit button decrypt the message body		
+		// Decrypt the message when Submit is pressed	
 		submit.setOnClickListener(new View.OnClickListener()
-		{		
+		{
 			public void onClick(View v)
 			{
 				// Generate key string by combining a hash of the password and the combined phone numbers
-				
 				TelephonyManager mTelephonyMgr;
 				mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 				String yourNumber = mTelephonyMgr.getLine1Number();
 				
 				String secretKeyString = String.valueOf(Math.abs(password.getText().toString().hashCode()))
-						+ (senderNum.toString() + yourNumber).hashCode();	
-					
-			//key length should be 16 characters as defined by AES-128-bit			
-			//if (secretKeyString.length() > 0 && secretKeyString.length() == 16)
-				try
+						+ String.valueOf(Math.abs((originNum + yourNumber).hashCode()));
+
+				if (password.length() > 0)
 				{
-					// convert the encrypted String message body to a byte
-					// array
-					byte[] msg = hex2byte(msgContent.getBytes());					
-					
-					// decrypt the byte array					
-					byte[] result = decryptSMS(secretKeyString, msg);//decryptSMS(secretKey.getText().toString(), msg);					
-					
-					// set the text view for the decrypted message					
-					decryptedMsg.setText(new String(result));				
-				
+					try
+					{
+						byte[] msg = hexToByte(msgContent.getBytes());					
+						
+						// Decrypt the message
+						byte[] result = decryptSMS(secretKeyString, msg);				
+						decryptedMessage.setText(new String(result));
+					}
+					catch (Exception e)
+					{
+						decryptedMessage.setText("Message Cannot Be Decrypted!");		
+					}
 				}
-				catch (Exception e)
-				{							
-					// in the case of message corrupted or invalid key				
-					// decryption cannot be carried out				 
-					decryptedMsg.setText("Message Cannot Be Decrypted!");				
-				}			
-			//} else			
-			//	Toast.makeText(getBaseContext(), "You must provide a 16-character secret key!",
-			//		Toast.LENGTH_SHORT).show();			
-			}			
-		});	
-	}	
+				else
+				{
+					Toast.makeText(getBaseContext(), "You must provide a password.", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+	}
 	
-	// utility function: convert hex array to byte array	
-	public static byte[] hex2byte(byte[] b)
+	public static byte[] hexToByte(byte[] b)
+	// Converts a hex stream to byte array
 	{
-		if ((b.length % 2) != 0)		
-			throw new IllegalArgumentException("hello");		
-		
-		byte[] b2 = new byte[b.length / 2];		
-		
+		byte[] b2 = new byte[b.length/2];
+
 		for (int n = 0; n < b.length; n += 2)
-		{		
-			String item = new String(b, n, 2);		
-			b2[n / 2] = (byte) Integer.parseInt(item, 16);		
-		}		
+		{
+			String temp = new String(b, n, 2);
+			b2[n/2] = (byte) Integer.parseInt(temp, 16);
+		}
 		return b2;
 	}
 	
-	// decryption function	
-	public static byte[] decryptSMS(String secretKeyString, byte[] encryptedMsg) throws Exception 
-	{		
-		// generate AES secret key from the user input secret key		
-		Key key = generateKey(secretKeyString);		
+	public static byte[] decryptSMS(String keyString, byte[] message) throws Exception
+	// Decrypt the message with the given key
+	{
+		Key key = generateKey(keyString);
 		
-		// get the cipher algorithm for AES		
-		Cipher c = Cipher.getInstance("AES");		
-		
-		// specify the decryption mode		
-		c.init(Cipher.DECRYPT_MODE, key);		
-		
-		// decrypt the message		
-		byte[] decValue = c.doFinal(encryptedMsg);		
-		
-		return decValue;	
+		// Decrypt the message
+		Cipher c = Cipher.getInstance("AES");	
+		c.init(Cipher.DECRYPT_MODE, key);	
+		byte[] decryptedBytes = c.doFinal(message);		
+
+		return decryptedBytes;
 	}
-		
-	private static Key generateKey(String secretKeyString) throws Exception 
-	{	
-		byte[] keyBytes = secretKeyString.getBytes("UTF-8");
+
+	private static Key generateKey(String keyString) throws Exception
+	// Creates a key spec from the given key string
+	{
+		byte[] keyBytes = keyString.getBytes("UTF-8");
 		MessageDigest sha = MessageDigest.getInstance("SHA-1");
 		keyBytes = sha.digest(keyBytes);
 		keyBytes = Arrays.copyOf(keyBytes, 16);
