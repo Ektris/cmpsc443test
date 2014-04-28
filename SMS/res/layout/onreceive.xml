@@ -20,8 +20,9 @@
 
         <TextView
             android:id="@+id/senderNum"
-            android:layout_width="244dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:layout_weight="0.03"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </LinearLayout>
@@ -38,9 +39,10 @@
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0.008"
+        android:background="@drawable/rounded_corner"
         android:ems="10"
-        android:inputType="textPassword"
-        android:background="@drawable/rounded_corner" >
+        android:inputType="textPassword" >
 
         <requestFocus />
     </EditText>
@@ -88,7 +90,7 @@
             android:id="@+id/cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cancel" />
+            android:text="Exit" />
 
     </LinearLayout>
 

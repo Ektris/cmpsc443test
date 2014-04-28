@@ -28,8 +28,8 @@
         <EditText
             android:id="@+id/recNum"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.90"
+            android:layout_height="match_parent"
+            android:layout_weight="0.82"
             android:background="@drawable/rounded_corner"
             android:ems="10"
             android:hint="To:"
@@ -38,9 +38,10 @@
         <Button
             android:id="@+id/contact"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:layout_weight="0.18"
             android:alpha="0.5"
+            android:background="@drawable/rounded_corner"
             android:text="+" />
 
     </LinearLayout>
@@ -57,6 +58,7 @@
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0.03"
         android:background="@drawable/rounded_corner"
         android:ems="10"
         android:inputType="textPassword" />
@@ -72,10 +74,10 @@
     <EditText
         android:id="@+id/msgContent"
         android:layout_width="match_parent"
-        android:layout_height="208dp"
+        android:layout_height="200dp"
         android:layout_weight="0.37"
-        android:inputType="textMultiLine"
-        android:background="@drawable/rounded_corner"/>
+        android:background="@drawable/rounded_corner"
+        android:inputType="textMultiLine" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
