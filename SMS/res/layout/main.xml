@@ -77,7 +77,8 @@
         android:layout_height="200dp"
         android:layout_weight="0.37"
         android:background="@drawable/rounded_corner"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine"
+        android:gravity="top|left" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"

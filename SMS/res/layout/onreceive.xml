@@ -23,7 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="28dp"
             android:layout_weight="0.03"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
