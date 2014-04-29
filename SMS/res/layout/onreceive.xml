@@ -52,13 +52,13 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Received Encrypted Message:"
+        android:text="Encrypted Message:"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/encryptedMsg"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="110dp"
         android:background="@drawable/rounded_corner" />
 
     <TextView
@@ -73,7 +73,10 @@
         android:layout_width="match_parent"
         android:layout_height="98dp"
         android:layout_weight="0.05"
-        android:background="@drawable/rounded_corner"/>
+        android:background="@drawable/rounded_corner"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
+        android:textSize="20sp" />
 
     <LinearLayout
         
